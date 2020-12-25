@@ -57,13 +57,12 @@ const main = async () => {
     result = result.join("");
     if (result) {
       const bot = new TelegramBot(telegramBotConfig.botToken, {
-        polling: true,
+        polling: false,
       });
       bot.sendMessage(
         telegramBotConfig.chatId,
         `WE FOUND PRODUCTS AVAILABLES FOR YOUR CONFIG: \n${result}`
       );
-      bot.closeWebHook();
     }
   } catch (e) {
     console.error(e);
