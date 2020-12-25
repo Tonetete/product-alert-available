@@ -1,6 +1,6 @@
 const axios = require("axios");
 const cheerio = require("cheerio");
-const sites = require("./config/sites.json");
+const sites = require("./sites.json");
 const telegramBotConfig = require("./config/telegram_bot.json");
 const products_url = require("./config/products_url.json");
 const TelegramBot = require("node-telegram-bot-api");
