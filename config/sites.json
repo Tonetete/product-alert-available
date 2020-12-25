@@ -1,0 +1,16 @@
+{
+  "pccomponentes": {
+    "alertText": ["Añadir al carrito", "Comprar"],
+    "matchers": [".buy-button"]
+  },
+
+  "elcorteingles": {
+    "alertText": ["Añadir al carrito", "Comprar"],
+    "matchers": ["span:contains('Añadir a la cesta')"]
+  },
+
+  "amazon": {
+    "alertText": ["Añadir a la cesta", "Comprar ya"],
+    "matchers": ["#add-to-cart-button"]
+  }
+}
