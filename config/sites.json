@@ -12,5 +12,9 @@
   "amazon": {
     "alertText": ["Añadir a la cesta", "Comprar ya"],
     "matchers": ["#add-to-cart-button"]
+  },
+  "mediamarkt": {
+    "alertText": ["Comprar ya"],
+    "matchers": ["a#pdp-add-to-cart > span:contains('Comprar')"]
   }
 }
