@@ -1,6 +1,5 @@
-const axios = require("axios");
-const cheerio = require("cheerio");
 const sites = require("./sites.json");
+const { domainName, fetchData } = require("./service/request");
 const telegramBotConfig = require("./config/telegram_bot.json");
 const products_url = require("./config/products_url.json");
 const TelegramBot = require("node-telegram-bot-api");
@@ -11,19 +10,9 @@ const initTelegramBot = () =>
     polling: false,
   });
 
-const fetchData = async (url) => {
-  try {
-    const result = await axios.get(url);
-    return cheerio.load(result.data);
-  } catch (e) {
-    throw new Error(`${e.message} \n ${e.response.data}`);
-  }
-};
-
 const siteParse = ($, keyProduct, url) => {
-  const domainName = url.replace(/https?:\/\/(?:www\.)?/, "").split(".")[0];
-  if (sites[domainName]) {
-    const matchers = sites[domainName].matchers.reduce(
+  if (sites[domainName(url)]) {
+    const matchers = sites[domainName(url)].matchers.reduce(
       (prev, curr, index) => (prev !== "" ? `${prev}, ${curr}` : `${curr}`),
       ""
     );
@@ -46,7 +35,6 @@ const main = async () => {
         })
       );
     });
-
     let result = await Promise.all(
       Object.keys(productsPromises).map(async (key) => {
         let productResults = await productsPromises[key];
@@ -56,14 +44,13 @@ const main = async () => {
         return productResults.length > 0
           ? productResults.reduce(
               (prev, curr) =>
-                `${prev} \ 
+                `${prev} \
                  ${curr}`,
               ""
             )
           : "";
       })
     );
-
     result = result.join("");
     if (result) {
       const bot = initTelegramBot();
