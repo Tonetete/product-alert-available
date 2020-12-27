@@ -4,10 +4,20 @@ const sites = require("./sites.json");
 const telegramBotConfig = require("./config/telegram_bot.json");
 const products_url = require("./config/products_url.json");
 const TelegramBot = require("node-telegram-bot-api");
+const { createLog } = require("./createLog");
+
+const initTelegramBot = () =>
+  new TelegramBot(telegramBotConfig.botToken, {
+    polling: false,
+  });
 
 const fetchData = async (url) => {
-  const result = await axios.get(url);
-  return cheerio.load(result.data);
+  try {
+    const result = await axios.get(url);
+    return cheerio.load(result.data);
+  } catch (e) {
+    throw new Error(`${e.message} \n ${e.response.data}`);
+  }
 };
 
 const siteParse = ($, keyProduct, url) => {
@@ -56,16 +66,20 @@ const main = async () => {
 
     result = result.join("");
     if (result) {
-      const bot = new TelegramBot(telegramBotConfig.botToken, {
-        polling: false,
-      });
+      const bot = initTelegramBot();
       bot.sendMessage(
         telegramBotConfig.chatId,
         `WE FOUND PRODUCTS AVAILABLES FOR YOUR CONFIG: \n${result}`
       );
     }
   } catch (e) {
-    console.error(e);
+    createLog(e.message, "error");
+    const bot = initTelegramBot();
+    bot.sendMessage(
+      telegramBotConfig.chatId,
+      `THERE WAS AN ERROR EXECUTING THE SCRIPT. PLEASE REFER TO LOGS: \
+      ${e.message}`
+    );
   }
 };
 
